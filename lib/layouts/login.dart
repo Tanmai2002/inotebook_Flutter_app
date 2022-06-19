@@ -20,7 +20,16 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool _isSignup = true;
-
+  Future checkAuth()async {
+    await ApisCall.initializeValues();
+    if(ApisCall.auth.isNotEmpty){
+      Navigator.popAndPushNamed(context, '/Home');
+    }
+  }
+  @override
+  void initState(){
+    checkAuth();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -98,6 +98,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "flutter_staggered_grid_view",
+      "rootUri": "file:///C:/Users/crazi/Downloads/flutter_windows_2.10.3-stable/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_staggered_grid_view-0.6.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter_test",
       "rootUri": "file:///C:/Users/crazi/Downloads/flutter_windows_2.10.3-stable/flutter/packages/flutter_test",
       "packageUri": "lib/",
@@ -138,6 +144,12 @@
       "rootUri": "file:///C:/Users/crazi/Downloads/flutter_windows_2.10.3-stable/flutter/.pub-cache/hosted/pub.dartlang.org/lints-1.0.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
+    },
+    {
+      "name": "loading_animation_widget",
+      "rootUri": "file:///C:/Users/crazi/Downloads/flutter_windows_2.10.3-stable/flutter/.pub-cache/hosted/pub.dartlang.org/loading_animation_widget-1.2.0+2",
+      "packageUri": "lib/",
+      "languageVersion": "2.16"
     },
     {
       "name": "matcher",
@@ -230,7 +242,7 @@
       "languageVersion": "2.16"
     }
   ],
-  "generated": "2022-06-19T03:37:44.665267Z",
+  "generated": "2022-06-19T15:23:16.138148Z",
   "generator": "pub",
   "generatorVersion": "2.16.1"
 }

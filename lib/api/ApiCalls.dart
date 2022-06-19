@@ -2,13 +2,14 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:inotebook/models/Note.dart';
 
 const  String AUTHTOKEN='authToken';
 class ApisCall{
   static String host='https://inotebook-dazz.herokuapp.com';
-  static late String auth;
+  static  String auth='';
   static final FlutterSecureStorage storage=new FlutterSecureStorage();
-  static void initializeValues() async{
+  static Future initializeValues() async{
     var t=await storage.read(key: AUTHTOKEN);
     if(t!=null && t.isNotEmpty){
       auth=t;
@@ -56,4 +57,14 @@ class ApisCall{
 
     return response;
   }
+
+  static Future<Response> getAllNotes() async{
+    String url='$host/api/notes/allNotes';
+    Response response=await get(Uri.parse(url),headers: <String,String>{
+      'auth-token':auth
+    });
+    print(response.body);
+    return response;
+  }
+  
 }

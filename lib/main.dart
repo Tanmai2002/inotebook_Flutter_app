@@ -9,6 +9,7 @@ void main() {
   _getAndroidOptions();
   runApp( MaterialApp(
     title: 'Login Page',
+    initialRoute: '/',
     routes:{
       '/': (context)=>Login(),
       '/Home': (context) =>Home(),
