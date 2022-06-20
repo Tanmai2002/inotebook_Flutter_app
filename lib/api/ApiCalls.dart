@@ -7,6 +7,11 @@ import 'package:inotebook/models/Note.dart';
 const String AUTHTOKEN = 'authToken';
 
 class ApisCall {
+   static Set<Note> _myAllnotes={};
+
+  static Set<Note> get myAllnotes => _myAllnotes;
+
+
   static String host = 'https://inotebook-dazz.herokuapp.com';
   static String auth = '';
   static final FlutterSecureStorage storage = new FlutterSecureStorage();
@@ -34,7 +39,7 @@ class ApisCall {
 
       await storage.write(
           key: AUTHTOKEN, value: jsonDecode(response.body)['authToken']);
-      print(await storage.read(key: AUTHTOKEN));
+      // print(await storage.read(key: AUTHTOKEN));
     }
     return response;
   }
@@ -50,7 +55,7 @@ class ApisCall {
       auth = jsonDecode(response.body)['authToken'];
       await storage.write(
           key: AUTHTOKEN, value: jsonDecode(response.body)['authToken']);
-      print(await storage.read(key: AUTHTOKEN));
+      // print(await storage.read(key: AUTHTOKEN));
     }
     // print(jsonDecode(response.body)['authToken']);
 
@@ -61,7 +66,13 @@ class ApisCall {
     String url = '$host/api/notes/allNotes';
     Response response = await get(Uri.parse(url),
         headers: <String, String>{'auth-token': auth});
-    print(response.body);
+    // print(response.body);
+    List l=jsonDecode(response.body)['notes'];
+    List<Note> tnotes=[];
+    for(Map<String,dynamic> note in l){
+      tnotes.add(Note.fromMap(note));
+    }
+    _myAllnotes=tnotes.toSet();
     return response;
   }
 
@@ -76,7 +87,12 @@ class ApisCall {
     }, body: jsonEncode(<String, String>{"title": title, "description": description, "tag": tag})
       // {"title": title, "description": description, "tag": tag}
     );
-    print(response.body);
+
+    if(response.statusCode==200){
+      Note notet=Note.fromMap(jsonDecode(response.body)['note']);
+      _myAllnotes.add(notet);
+    }
+    // print(response.body);
     return response;
   }
   static Future<Response> updateNote({required Note note}) async {
@@ -87,7 +103,10 @@ class ApisCall {
     }, body: jsonEncode(<String, String>{"title": note.title, "description": note.description, "tag": note.tag})
       // {"title": title, "description": description, "tag": tag}
     );
-    print(response.body);
+    if(response.statusCode==200){
+      _myAllnotes=myAllnotes.map((e) => e.id==note.id?note:e).toSet();
+    }
+    // print(response.body);
     return response;
   }
 
@@ -98,7 +117,11 @@ class ApisCall {
       'auth-token': auth
     }
     );
-    print(response.body);
+
+    if(response.statusCode==200){
+      _myAllnotes.remove(note);
+    }
+    // print(response.body);
     return response;
   }
 }

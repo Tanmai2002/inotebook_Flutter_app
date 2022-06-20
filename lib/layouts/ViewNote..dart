@@ -29,13 +29,14 @@ class ViewNote extends StatelessWidget {
         return;
       }
       Fluttertoast.showToast(msg:'Note Added Successfully!',backgroundColor: Colors.greenAccent);
+      note1=null;
       Navigator.pop(context);
       }
       else{
         note1!.title=title;
-        note1.description=desc;
-        note1.tag=tag;
-        Response response =await ApisCall.updateNote(note: note1);
+        note1!.description=desc;
+        note1!.tag=tag;
+        Response response =await ApisCall.updateNote(note: note1!);
         if(response.statusCode!=200){
 
           Map<String,dynamic> errors=jsonDecode(response.body);
@@ -43,6 +44,7 @@ class ViewNote extends StatelessWidget {
           return;
         }
         Fluttertoast.showToast(msg:'Note updated Successfully!',backgroundColor: Colors.greenAccent);
+        note1=null;
         Navigator.pop(context);
       }
     }

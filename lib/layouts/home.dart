@@ -27,27 +27,8 @@ class _HomeState extends State<Home> {
   void initState() {
     getAllNotes();
   }
-void deleteNote(Note note)async{
-  setState(() {
-    _isLoading=true;
-  });
-  Response response =await ApisCall.deleteNote(note: note);
-  if(response.statusCode==200){
-    notes.remove(note);
-    setState(() {
-      notes=notes;
-      _isLoading=false;
 
-    });
-    Fluttertoast.showToast(msg: "Successfully deleted" , backgroundColor: Colors.greenAccent);
 
-  }else{
-    setState(() {
-      _isLoading=false;
-    });
-    Fluttertoast.showToast(msg: "Cannot Delete Error",backgroundColor: Colors.redAccent);
-  }
-}
   void getAllNotes() async{
     setState(() {
       _isLoading=true;
@@ -57,13 +38,9 @@ void deleteNote(Note note)async{
       _isLoading=false;
     });
     if(response.statusCode==200){
-      List l=jsonDecode(response.body)['notes'];
-      List tnotes=[];
-      for(Map<String,dynamic> note in l){
-        tnotes.add(Note.fromMap(note));
-      }
+
       setState(() {
-        notes=tnotes;
+        notes=ApisCall.myAllnotes.toList();
         _isLoading=false;
       });
     }
@@ -93,13 +70,19 @@ void deleteNote(Note note)async{
 
       ),
       body: Container(
-        child :_isLoading?NotesLoadingPage():NotesPage(deleteNote: deleteNote,)
+        child :_isLoading?NotesLoadingPage():NotesPage(setStateP: setState)
       ),
       floatingActionButton:
       FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          Navigator.pushNamed(context, '/ViewNote');
+          Navigator.pushNamed(context, '/ViewNote').then((value) => {
+
+            setState((){
+              notes=ApisCall.myAllnotes.toList();
+            })
+          });
+
         },),
 
     );
@@ -107,8 +90,8 @@ void deleteNote(Note note)async{
 }
 
 class NotesPage extends StatefulWidget {
-  final deleteNote;
-  const NotesPage({ required this.deleteNote});
+  final setStateP;
+  const NotesPage({ required this.setStateP});
 
   @override
   State<NotesPage> createState() => _NotesPageState();
@@ -117,6 +100,30 @@ class NotesPage extends StatefulWidget {
 class _NotesPageState extends State<NotesPage> {
   @override
   Widget build(BuildContext context) {
+    void deleteNote(Note note)async{
+      widget.setStateP(() {
+        _isLoading=true;
+      });
+      Response response =await ApisCall.deleteNote(note: note);
+      if(response.statusCode==200){
+        notes.remove(note);
+        widget.setStateP(() {
+          notes=notes;
+          _isLoading=false;
+
+        });
+        Fluttertoast.showToast(msg: "Successfully deleted" , backgroundColor: Colors.greenAccent);
+
+      }else{
+        widget.setStateP(() {
+          _isLoading=false;
+        });
+        Fluttertoast.showToast(msg: "Cannot Delete Error",backgroundColor: Colors.redAccent);
+      }
+    }
+    void updateNote(Note note) async{
+
+    }
 
     return SingleChildScrollView(
         child: MasonryGridView.count(
@@ -158,10 +165,15 @@ class _NotesPageState extends State<NotesPage> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton(onPressed: (){
-                            widget.deleteNote(note);
+                            deleteNote(note);
                           }, icon: const Icon(Icons.delete)),
                           IconButton(onPressed: (){
-                            Navigator.pushNamed(context, '/ViewNote',arguments: note);
+                            Navigator.pushNamed(context, '/ViewNote',arguments: note).then((value) => {
+                              widget.setStateP((){
+                                notes=ApisCall.myAllnotes.toList();
+                              })
+                            });
+
                           }, icon: const Icon(Icons.edit) ),
                         ],
                       ),
