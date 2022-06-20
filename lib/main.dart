@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:inotebook/layouts/ViewNote..dart';
 import 'package:inotebook/layouts/home.dart';
 import 'package:inotebook/layouts/login.dart';
 AndroidOptions _getAndroidOptions() => const AndroidOptions(
@@ -13,7 +14,7 @@ void main() {
     routes:{
       '/': (context)=>Login(),
       '/Home': (context) =>Home(),
-      '/Favs': (context)=>Home()
+      '/ViewNote': (context)=>ViewNote()
     },
   ));
 }
