@@ -20,6 +20,7 @@ class ViewNote extends StatelessWidget {
 
     Note? note1=ModalRoute.of(context)?.settings.arguments as Note?;
     void AddNote() async{
+      if(!_isUpdateMode){
       Response response =await ApisCall.addNote(title: title, description: desc,tag: tag);
       if(response.statusCode!=200){
 
@@ -29,6 +30,21 @@ class ViewNote extends StatelessWidget {
       }
       Fluttertoast.showToast(msg:'Note Added Successfully!',backgroundColor: Colors.greenAccent);
       Navigator.pop(context);
+      }
+      else{
+        note1!.title=title;
+        note1.description=desc;
+        note1.tag=tag;
+        Response response =await ApisCall.updateNote(note: note1);
+        if(response.statusCode!=200){
+
+          Map<String,dynamic> errors=jsonDecode(response.body);
+          Fluttertoast.showToast(msg: errors['Error']!=null?errors['Error'].toString():"",backgroundColor: Colors.redAccent);
+          return;
+        }
+        Fluttertoast.showToast(msg:'Note updated Successfully!',backgroundColor: Colors.greenAccent);
+        Navigator.pop(context);
+      }
     }
     return Scaffold(
 

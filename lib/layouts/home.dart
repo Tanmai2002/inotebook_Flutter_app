@@ -1,14 +1,15 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:inotebook/api/ApiCalls.dart';
 import 'package:inotebook/models/Note.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -18,14 +19,43 @@ class Home extends StatefulWidget {
 }
 List notes=[
 ];
+
+bool _isLoading=false;
 class _HomeState extends State<Home> {
-  bool _isLoading=true;
+
 @override
   void initState() {
     getAllNotes();
   }
+void deleteNote(Note note)async{
+  setState(() {
+    _isLoading=true;
+  });
+  Response response =await ApisCall.deleteNote(note: note);
+  if(response.statusCode==200){
+    notes.remove(note);
+    setState(() {
+      notes=notes;
+      _isLoading=false;
+
+    });
+    Fluttertoast.showToast(msg: "Successfully deleted" , backgroundColor: Colors.greenAccent);
+
+  }else{
+    setState(() {
+      _isLoading=false;
+    });
+    Fluttertoast.showToast(msg: "Cannot Delete Error",backgroundColor: Colors.redAccent);
+  }
+}
   void getAllNotes() async{
+    setState(() {
+      _isLoading=true;
+    });
     Response response=await ApisCall.getAllNotes();
+    setState(() {
+      _isLoading=false;
+    });
     if(response.statusCode==200){
       List l=jsonDecode(response.body)['notes'];
       List tnotes=[];
@@ -63,7 +93,7 @@ class _HomeState extends State<Home> {
 
       ),
       body: Container(
-        child :_isLoading?NotesLoadingPage():NotesPage()
+        child :_isLoading?NotesLoadingPage():NotesPage(deleteNote: deleteNote,)
       ),
       floatingActionButton:
       FloatingActionButton(
@@ -77,7 +107,8 @@ class _HomeState extends State<Home> {
 }
 
 class NotesPage extends StatefulWidget {
-  const NotesPage({Key? key}) : super(key: key);
+  final deleteNote;
+  const NotesPage({ required this.deleteNote});
 
   @override
   State<NotesPage> createState() => _NotesPageState();
@@ -86,6 +117,7 @@ class NotesPage extends StatefulWidget {
 class _NotesPageState extends State<NotesPage> {
   @override
   Widget build(BuildContext context) {
+
     return SingleChildScrollView(
         child: MasonryGridView.count(
 
@@ -125,8 +157,12 @@ class _NotesPageState extends State<NotesPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          IconButton(onPressed: (){}, icon: const Icon(Icons.delete)),
-                          IconButton(onPressed: (){}, icon: const Icon(Icons.edit) ),
+                          IconButton(onPressed: (){
+                            widget.deleteNote(note);
+                          }, icon: const Icon(Icons.delete)),
+                          IconButton(onPressed: (){
+                            Navigator.pushNamed(context, '/ViewNote',arguments: note);
+                          }, icon: const Icon(Icons.edit) ),
                         ],
                       ),
                     )

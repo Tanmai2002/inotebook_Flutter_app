@@ -79,4 +79,28 @@ class ApisCall {
     print(response.body);
     return response;
   }
+  static Future<Response> updateNote({required Note note}) async {
+    String url = '$host/api/notes/updateNote/${note.id}';
+    Response response = await put(Uri.parse(url), headers: <String, String>{
+      "Content-Type": "application/json",
+      'auth-token': auth
+    }, body: jsonEncode(<String, String>{"title": note.title, "description": note.description, "tag": note.tag})
+      // {"title": title, "description": description, "tag": tag}
+    );
+    print(response.body);
+    return response;
+  }
+
+  static Future<Response> deleteNote({required Note note}) async {
+    String url = '$host/api/notes/deleteNote/${note.id}';
+    Response response = await delete(Uri.parse(url), headers: <String, String>{
+
+      'auth-token': auth
+    }
+    );
+    print(response.body);
+    return response;
+  }
 }
+
+
