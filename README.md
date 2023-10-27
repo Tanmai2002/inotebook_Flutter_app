@@ -1,5 +1,5 @@
 # inotebook Flutter app
-An App version to the react app.
+An App version to the react app now.
 
 ## Getting Started
 
