@@ -1,8 +1,16 @@
 workflows:
   my-workflow:
     scripts:
-      - name: Build Android APK
-        working_directory: android
-        script: ./gradlew assembleRelease
+      - name: Set up local.properties
+        script: | 
+          echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
+      - name: Get Flutter packages
+        script: | 
+          flutter packages pub get
+      - name: Build AAB with Flutter
+        script: | 
+          flutter build apk
     artifacts:
-      - app/build/outputs/**/**/*.apk
+        - build/**/outputs/**/*.apk
+        - build/**/outputs/**/mapping.txt
+        - flutter_drive.log
