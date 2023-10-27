@@ -21,3 +21,12 @@ workflows:
         - pattern: 'main'
           include: true
           source: true 
+    when:
+      changeset:
+        includes:
+          - 'android/'
+          - 'lib/'
+          - 'assets/'
+          - 'ios/'
+          - 'pubspec.yaml'
+          - 'codemagic.yaml'
